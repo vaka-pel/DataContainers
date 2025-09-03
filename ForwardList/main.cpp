@@ -39,7 +39,7 @@ public:
 		cout << "FLdestructor:\t" << this << endl;
 	}
 
-	// Adding elements:
+	// Adding elements
 	void push_front(int Data)
 	{
 		// создаем элемент и сохраняем в него добавляемое значение
