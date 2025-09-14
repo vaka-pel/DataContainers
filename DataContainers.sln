@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DataContainers", "DataContainers\DataContainers.vcxproj", "{83BAC0CC-1976-4933-85EF-A5928D4283AF}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ForwardList", "ForwardList\ForwardList.vcxproj", "{8F35F72D-7379-42DC-983B-53C8EFC5CB90}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "List", "List\List.vcxproj", "{63311BED-7294-49C3-A91A-EE98ACA46B00}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +33,14 @@ Global
 		{8F35F72D-7379-42DC-983B-53C8EFC5CB90}.Release|x64.Build.0 = Release|x64
 		{8F35F72D-7379-42DC-983B-53C8EFC5CB90}.Release|x86.ActiveCfg = Release|Win32
 		{8F35F72D-7379-42DC-983B-53C8EFC5CB90}.Release|x86.Build.0 = Release|Win32
+		{63311BED-7294-49C3-A91A-EE98ACA46B00}.Debug|x64.ActiveCfg = Debug|x64
+		{63311BED-7294-49C3-A91A-EE98ACA46B00}.Debug|x64.Build.0 = Debug|x64
+		{63311BED-7294-49C3-A91A-EE98ACA46B00}.Debug|x86.ActiveCfg = Debug|Win32
+		{63311BED-7294-49C3-A91A-EE98ACA46B00}.Debug|x86.Build.0 = Debug|Win32
+		{63311BED-7294-49C3-A91A-EE98ACA46B00}.Release|x64.ActiveCfg = Release|x64
+		{63311BED-7294-49C3-A91A-EE98ACA46B00}.Release|x64.Build.0 = Release|x64
+		{63311BED-7294-49C3-A91A-EE98ACA46B00}.Release|x86.ActiveCfg = Release|Win32
+		{63311BED-7294-49C3-A91A-EE98ACA46B00}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
