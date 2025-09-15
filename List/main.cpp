@@ -1,5 +1,7 @@
 #include<iostream>
-using namespace std;
+using std::cin;
+using std::cout;
+using std::endl;
 
 #define tab "\t"
 #define delimiter "\n-----------------------------------\n"
@@ -22,14 +24,139 @@ class List
 		}
 		friend class List;
 	}*Head, *Tail; // Объекты классов и структур и указатели на эти объекты можно обьявлять непосредственно 
-	// после описания классов и структур
+    // после описания классов и структур
 	size_t size; // Размер списка size_t - это typedef на "unsigned int"
 public:
+	class Iterator
+	{
+		Element* Temp;
+	public:
+		Iterator(Element* Temp = nullptr) :Temp(Temp) {}
+		~Iterator() {}
+		Iterator& operator++()
+		{
+			Temp = Temp->pNext;
+			return *this;
+		}
+		Iterator operator++(int)
+		{
+			Iterator old = *this;
+			Temp = Temp->pNext;
+			return old;
+		}
+		Iterator& operator--()
+		{
+			Temp = Temp->pPrev;
+			return *this;
+		}
+		Iterator& operator--(int)
+		{
+			Iterator old = *this;
+			Temp = Temp->pPrev;
+			return old;
+		}
+
+		// Comparison operators
+		bool operator==(const Iterator& other)const
+		{
+			return this->Temp == other.Temp;
+		}
+		bool operator!=(const Iterator& other)const
+		{
+			return this->Temp != other.Temp;
+		}
+		int operator*()const
+		{
+			return Temp->Data;
+		}
+		int& operator*()
+		{
+			return Temp->Data;
+		}
+	};
+	class ReverseIterator
+	{
+		Element* Temp;
+	public:
+		ReverseIterator(Element* Temp = nullptr) :Temp(Temp){}
+		~ReverseIterator() {}
+		// Increment/Decrement
+		ReverseIterator& operator++()
+		{
+			Temp = Temp->pPrev;
+			return *this;
+		}
+		ReverseIterator& operator++(int)
+		{
+			ReverseIterator old = *this;
+			Temp = Temp->pPrev;
+			return old;
+		}
+		ReverseIterator& operator--()
+		{
+			Temp = Temp->pNext;
+			return *this;
+		}
+		ReverseIterator& operator--(int)
+		{
+			ReverseIterator old = *this;
+			Temp = Temp->pNext;
+			return old;
+		}
+
+		// Comparison operators
+
+		bool operator==(const ReverseIterator& other)const
+		{
+			return this->Temp == other.Temp;
+		}
+		bool operator!=(const ReverseIterator& other)const
+		{
+			return this->Temp != other.Temp;
+		}
+		int operator*()const
+		{
+			return Temp->Data;
+		}
+		int& operator*()
+		{
+			return Temp->Data;
+		}
+	};
+	const Iterator begin()const
+	{
+		return Head;
+	}
+	const Iterator end()const
+	{
+		return nullptr;
+	}
+	ReverseIterator rbegin()
+	{
+		return Tail;
+	}
+	ReverseIterator rend()
+	{
+		return nullptr;
+	}
 	List()
 	{
 		Head = Tail = nullptr;
 		size = 0;
 		cout << "LCostructor:\t" << this << endl;
+	}
+	List(const std::initializer_list<int>& il) :List()
+	{
+		for (int const* it = il.begin(); it != il.end(); ++it)
+		{
+			push_back(*it);
+		}
+		cout << "ILConstructor:\t" << this << endl;
+	}
+	List(const List& other) :List()
+	{
+		*this = other;
+		cout << "LCopyconstructor:\t" << this << endl;
 	}
 	~List()
 	{
@@ -37,6 +164,17 @@ public:
 		while (Tail)pop_back();
 		cout << "LDestructor:\t" << this << endl;
 	}
+	// Operators
+	List& operator=(const List& other)
+	{
+		if (this == &other)return *this;
+		while (Head)pop_front();
+		for (Element* Temp = other.Head; Temp; Temp = Temp->pNext)
+			push_back(Temp->Data);
+		cout << "LCopyAsignment:\t" << this << endl;
+		return *this;
+	}
+
 	//         Adding Elements:
 	void push_front(int Data)
 	{
@@ -181,8 +319,19 @@ public:
 	}
 };
 
+List operator+(const List& left, const List& right)
+{
+	List fusion = left;
+	for (List::Iterator it = right.begin(); it != right.end(); ++it)
+	{
+		*it *= 100;
+		fusion.push_back(*it);
+	}
+	return fusion;
+}
+
 //#define BASE_CHECK
-//#define HOME_WORK
+#define HOME_WORK
 void main()
 {
 	setlocale(LC_ALL, "");
@@ -217,10 +366,22 @@ void main()
 #ifdef HOME_WORK
 	List list1 = { 3, 5, 8, 13, 21 };
 	List list2 = { 34, 55, 89 };
+	//list1.print();
+	//list2.print();
 	List list3 = list1 + list2;
 	for (int i : list1)cout << i << tab; cout << endl;
 	for (int i : list2)cout << i << tab; cout << endl;
 	for (int i : list3)cout << i << tab; cout << endl;
+	for (List::Iterator it = list1.begin(); it != list1.end(); ++it)
+	{
+		cout << *it << tab;
+	}
+	cout << endl;
+	for (List::ReverseIterator it = list1.rbegin(); it != list1.rend(); ++it)
+	{
+		cout << *it << tab;
+	}
+	cout << endl;
 
 #endif // HOME_WORK
 
