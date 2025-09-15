@@ -26,108 +26,131 @@ class List
 	}*Head, *Tail; // ќбъекты классов и структур и указатели на эти объекты можно обь€вл€ть непосредственно 
     // после описани€ классов и структур
 	size_t size; // –азмер списка size_t - это typedef на "unsigned int"
+	class ConstBaseIterator
+	{
+		// этот класс обобщает свойства разных итераторов
+protected:
+	Element* Temp;
+	public:
+		ConstBaseIterator(Element* Temp = nullptr) :Temp(Temp) {}
+		~ConstBaseIterator() {}
+	//    Comprasion operators
+	bool operator==(const ConstBaseIterator& other)const
+	{
+		return this->Temp == other.Temp;
+	}
+	bool operator!=(const ConstBaseIterator& other)const
+	{
+		return this->Temp != other.Temp;
+	}
+	int operator*()const //в конст итераторе должен быть конст оператор разименовани€
+		// ни в коем случае не должно быть обычного оператора разименовани€
+	{
+		return Temp->Data;
+	}
+
+};
 public:
-	class Iterator
+	class ConstIterator:public ConstBaseIterator
 	{
-		Element* Temp;
 	public:
-		Iterator(Element* Temp = nullptr) :Temp(Temp) {}
-		~Iterator() {}
-		Iterator& operator++()
-		{
-			Temp = Temp->pNext;
-			return *this;
-		}
-		Iterator operator++(int)
-		{
-			Iterator old = *this;
-			Temp = Temp->pNext;
-			return old;
-		}
-		Iterator& operator--()
-		{
-			Temp = Temp->pPrev;
-			return *this;
-		}
-		Iterator& operator--(int)
-		{
-			Iterator old = *this;
-			Temp = Temp->pPrev;
-			return old;
-		}
+		ConstIterator(Element* Temp = nullptr) :ConstBaseIterator(Temp) {}
+		~ConstIterator() {}
 
-		// Comparison operators
-		bool operator==(const Iterator& other)const
+		ConstIterator& operator++()
 		{
-			return this->Temp == other.Temp;
+			Temp = Temp->pNext;
+			return *this;
 		}
-		bool operator!=(const Iterator& other)const
+		ConstIterator operator++(int)
 		{
-			return this->Temp != other.Temp;
+			ConstIterator old = *this;
+			Temp = Temp->pNext;
+			return old;
 		}
-		int operator*()const
+		ConstIterator& operator--()
 		{
-			return Temp->Data;
+			Temp = Temp->pPrev;
+			return *this;
 		}
-		int& operator*()
+		ConstIterator& operator--(int)
 		{
-			return Temp->Data;
+			ConstIterator old = *this;
+			Temp = Temp->pPrev;
+			return old;
 		}
 	};
-	class ReverseIterator
+	class ConstReverseIterator:public ConstBaseIterator
 	{
-		Element* Temp;
 	public:
-		ReverseIterator(Element* Temp = nullptr) :Temp(Temp){}
-		~ReverseIterator() {}
+		ConstReverseIterator(Element* Temp = nullptr) :ConstBaseIterator(Temp){}
+		~ConstReverseIterator() {}
 		// Increment/Decrement
-		ReverseIterator& operator++()
+		ConstReverseIterator& operator++()
 		{
 			Temp = Temp->pPrev;
 			return *this;
 		}
-		ReverseIterator& operator++(int)
+		ConstReverseIterator& operator++(int)
 		{
-			ReverseIterator old = *this;
+			ConstReverseIterator old = *this;
 			Temp = Temp->pPrev;
 			return old;
 		}
-		ReverseIterator& operator--()
+		ConstReverseIterator& operator--()
 		{
 			Temp = Temp->pNext;
 			return *this;
 		}
-		ReverseIterator& operator--(int)
+		ConstReverseIterator& operator--(int)
 		{
-			ReverseIterator old = *this;
+			ConstReverseIterator old = *this;
 			Temp = Temp->pNext;
 			return old;
 		}
-
-		// Comparison operators
-
-		bool operator==(const ReverseIterator& other)const
-		{
-			return this->Temp == other.Temp;
-		}
-		bool operator!=(const ReverseIterator& other)const
-		{
-			return this->Temp != other.Temp;
-		}
-		int operator*()const
-		{
-			return Temp->Data;
-		}
+	};
+	class Iterator :public ConstIterator
+	{
+	public:
+		Iterator(Element* Temp) : ConstIterator(Temp) {}
+		~Iterator() {}
 		int& operator*()
 		{
 			return Temp->Data;
 		}
 	};
-	const Iterator begin()const
+	class ReverseIterator :public ConstReverseIterator
+	{
+	public:
+		ReverseIterator(Element* Temp) : ConstReverseIterator(Temp) {}
+		~ReverseIterator() {}
+		int& operator*()
+		{
+			return Temp->Data;
+		}
+	};
+
+	const ConstIterator begin()const
 	{
 		return Head;
 	}
-	const Iterator end()const
+	const ConstIterator end()const
+	{
+		return nullptr;
+	}
+	ConstReverseIterator rbegin()const
+	{
+		return Tail;
+	}
+	ConstReverseIterator rend()const
+	{
+		return nullptr;
+	}
+	Iterator begin()
+	{
+		return Head;
+	}
+	Iterator end()
 	{
 		return nullptr;
 	}
@@ -139,6 +162,7 @@ public:
 	{
 		return nullptr;
 	}
+
 	List()
 	{
 		Head = Tail = nullptr;
@@ -322,9 +346,9 @@ public:
 List operator+(const List& left, const List& right)
 {
 	List fusion = left;
-	for (List::Iterator it = right.begin(); it != right.end(); ++it)
+	for (List::ConstIterator it = right.begin(); it != right.end(); ++it)
 	{
-		*it *= 100;
+		//*it *= 100;
 		fusion.push_back(*it);
 	}
 	return fusion;
@@ -372,13 +396,18 @@ void main()
 	for (int i : list1)cout << i << tab; cout << endl;
 	for (int i : list2)cout << i << tab; cout << endl;
 	for (int i : list3)cout << i << tab; cout << endl;
-	for (List::Iterator it = list1.begin(); it != list1.end(); ++it)
+	for (List::ConstIterator it = list1.begin(); it != list1.end(); ++it)
 	{
 		cout << *it << tab;
 	}
 	cout << endl;
-	for (List::ReverseIterator it = list1.rbegin(); it != list1.rend(); ++it)
+	for (List::Iterator it = list1.begin(); it != list1.end(); ++it)
 	{
+		*it *= 100;
+	}
+	for (List::ConstReverseIterator it = list2.rbegin(); it != list2.rend(); ++it)
+	{
+		//*it *= 100;
 		cout << *it << tab;
 	}
 	cout << endl;
