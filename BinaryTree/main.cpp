@@ -184,14 +184,20 @@ private:
 		else return Root->Data + sum(Root->pLeft) + sum(Root->pRight);*/
 	}
 	int depth(Element* Root)const
-	{
-		return Root == nullptr ? 0 : std::max(depth(Root->pLeft) + 1, depth(Root->pRight) + 1);
 
-		return
+	{
+		return Root == nullptr ? 0 : std :: max(depth(Root->pLeft) + 1, depth(Root->pRight) + 1);
+
+		/*if (Root == nullptr)return 0;
+		int l_depth = depth(Root->pLeft)+1;
+		int r_depth = depth(Root->pRight)+1;
+		return l_depth < r_depth ? r_depth : l_depth;*/
+
+		/*return
 			Root == nullptr ? 0:
 			depth(Root->pLeft) + 1 > depth(Root->pRight) + 1 ?
 			depth(Root->pLeft) + 1 :
-			depth(Root->pRight) + 1;
+			depth(Root->pRight) + 1;*/
 
 	}
 	/*double avg(Element* Root)const
@@ -310,7 +316,7 @@ void main()
 	tree.erase(50);
 	tree.erase(75);*/
 	tree.print();
-	cout << "Глубина дерева: " << tree.depth() << endl;
+	cout << "Глубина дерева составляет: " << tree.depth() << endl;
 #endif // ERASE_CHECK
 
 #ifdef PERFORMANCE_CHECK
