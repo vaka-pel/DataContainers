@@ -59,6 +59,10 @@ public:
 		clear();
 		cout << "TDestructor:\t" << this << endl;
 	}
+	void balance()
+	{
+		balance(Root);
+	}
 	void clear()
 	{
 		clear(Root);
@@ -95,12 +99,43 @@ public:
 	{
 		return depth(Root);
 	}
+	void depth_print(int depth, int width=2)const
+	{
+		depth_print(depth, Root, width);
+		cout << endl;
+	}
+	void tree_print()const
+	{
+		tree_print(depth(), 4 * depth());
+	}
 	void print()const
 	{
 		print(Root);
 		cout << endl;
 	}
 private:
+	void balance(Element* Root)
+	{
+		if (Root == nullptr)return;
+		if (abs(count(Root->pLeft) - count(Root->pRight)) < 2)
+			return;
+		if (count(Root->pLeft) < count(Root->pRight))
+		{
+			if (Root->pLeft) insert(Root->Data, Root->pLeft);
+			else Root->pLeft = new Element(Root->Data);
+			Root->Data = minValue(Root->pRight);
+			erase(minValue(Root->pRight), Root->pRight);
+
+		}
+		if (count(Root->pLeft) > count(Root->pRight))
+		{
+			if (Root->pRight) insert(Root->Data, Root->pRight);
+			else Root->pRight = new Element(Root->Data);
+			Root->Data = maxValue(Root->pLeft);
+			erase(maxValue(Root->pLeft), Root->pLeft);
+
+		}
+	}
 	void clear(Element*& Root)
 	{
 		if (Root == nullptr)return;
@@ -123,6 +158,9 @@ private:
 			if (Root->pRight == nullptr)Root->pRight = new Element(Data);
 			else insert(Data, Root->pRight);
 		}
+		balance(Root->pLeft);
+		balance(Root->pRight);
+		balance(Root);
 	}
 	void erase(int Data, Element*& Root)
 	{
@@ -205,6 +243,35 @@ private:
 		if (Root == nullptr)return 0;
 		return(double)sum(Root) / count(Root);
 	}*/
+	void depth_print(int depth, Element* Root, int width)const
+	{
+		if (Root == nullptr)
+		{
+			//cout.width(width);
+			//cout << " ";
+			return;
+		}
+		if (depth == 0)
+		{
+			cout.width(width);
+			cout << Root->Data;
+		
+		}
+		depth_print(depth - 1, Root->pLeft, width);
+		depth_print(depth - 1, Root->pRight, width);
+	}
+	void tree_print(int depth, int width)const
+	{
+		if (depth == -1)
+		{
+			return;
+		}
+		tree_print(depth - 1, width * 1.5);
+		depth_print(depth - 1, width);
+		cout << endl;
+		cout << endl;
+
+	}
 	void print(Element* Root)const
 	{
 		if (Root == nullptr)return;
@@ -213,18 +280,7 @@ private:
 		print(Root->pRight);
 	}
 
-    /*void print(Element* Root, int level)const
-    {
-	if (Root == nullptr)return;
-
-		print(Root->pLeft, level + 1);
-		for (int i = 0; i < level; i++) cout << "    ";
-		cout << Root->Data << tab;
-		print(Root->pRight, level + 1);
-	
-    }*/
-
-
+    
 };
 class UniqueTree :public Tree
 {
@@ -262,7 +318,8 @@ template<typename T>void measure_performance(const char message[], T(Tree::*func
 
 //#define BASE_CHECK
 //#define ERASE_CHECK
-#define PERFORMANCE_CHECK
+#define DEPTH_CHECK
+//#define PERFORMANCE_CHECK
 
 void main()
 {
@@ -302,7 +359,7 @@ void main()
 
 #ifdef ERASE_CHECK
 	Tree tree =
-	{ 50,
+	{              50,
 
 			25,            75,
 
@@ -318,6 +375,32 @@ void main()
 	tree.print();
 	cout << "Глубина дерева составляет: " << tree.depth() << endl;
 #endif // ERASE_CHECK
+
+#ifdef DEPTH_CHECK
+
+	Tree tree =
+	{              50,
+
+			25,            75,
+
+		16,     32,     58,     85//, 91, 98
+	};
+	tree.print();
+	cout << "Глубина дерева составляет: " << tree.depth() << endl;
+	//tree.depth_print(3);
+	tree.tree_print();
+
+	Tree tree2 = { 55, 34, 21, 13, 8, 5, 3 };
+	tree2.tree_print();
+	tree2.balance();
+	cout << "\n-------------------------------------------------------\n";
+	tree2.tree_print();
+	
+	
+
+#endif // DEPTH_CHECK
+
+
 
 #ifdef PERFORMANCE_CHECK
 	int n;
